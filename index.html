@@ -1,0 +1,443 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RyugoGame - ゲーム実況者</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            overflow-x: hidden;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+        
+        header {
+            padding: 2rem 0;
+            text-align: center;
+            background: rgba(0, 0, 0, 0.3);
+            backdrop-filter: blur(10px);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .header-bg {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 300"><polygon fill="%23ffffff10" points="0,300 1000,300 1000,0 0,100"/></svg>');
+            animation: float 6s ease-in-out infinite;
+        }
+        
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-20px); }
+        }
+        
+        .profile-image {
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            margin: 0 auto 2rem;
+            background: linear-gradient(45deg, #ff6b6b, #4ecdc4);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 4rem;
+            position: relative;
+            z-index: 2;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+            transition: transform 0.3s ease;
+        }
+        
+        .profile-image:hover {
+            transform: scale(1.1) rotate(5deg);
+        }
+        
+        h1 {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            position: relative;
+            z-index: 2;
+            text-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+        }
+        
+        .tagline {
+            font-size: 1.2rem;
+            opacity: 0.9;
+            position: relative;
+            z-index: 2;
+        }
+        
+        .main-content {
+            padding: 4rem 0;
+        }
+        
+        .section {
+            margin-bottom: 4rem;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            padding: 3rem;
+            backdrop-filter: blur(15px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            transform: translateY(0);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        
+        .section:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.3);
+        }
+        
+        .section h2 {
+            font-size: 2.5rem;
+            margin-bottom: 2rem;
+            text-align: center;
+            color: #fff;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+        }
+        
+        .about-content {
+            font-size: 1.1rem;
+            line-height: 1.8;
+            text-align: center;
+            opacity: 0.9;
+        }
+        
+        .games-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+        
+        .game-card {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            padding: 2rem;
+            text-align: center;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .game-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+            transition: left 0.5s ease;
+        }
+        
+        .game-card:hover::before {
+            left: 100%;
+        }
+        
+        .game-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.3);
+        }
+        
+        .game-icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            display: block;
+        }
+        
+        .social-links {
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+        
+        .social-link {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 1rem 2rem;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 50px;
+            text-decoration: none;
+            color: white;
+            transition: all 0.3s ease;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        
+        .social-link:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: translateY(-3px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
+        }
+        
+        .social-icon {
+            font-size: 1.5rem;
+        }
+        
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+        
+        .stat-card {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            padding: 2rem;
+            text-align: center;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            transition: all 0.3s ease;
+        }
+        
+        .stat-card:hover {
+            transform: scale(1.05);
+            background: rgba(255, 255, 255, 0.15);
+        }
+        
+        .stat-number {
+            font-size: 2.5rem;
+            font-weight: bold;
+            color: #4ecdc4;
+            margin-bottom: 0.5rem;
+        }
+        
+        .stat-label {
+            font-size: 1rem;
+            opacity: 0.8;
+        }
+        
+        footer {
+            text-align: center;
+            padding: 2rem 0;
+            background: rgba(0, 0, 0, 0.3);
+            backdrop-filter: blur(10px);
+            margin-top: 4rem;
+        }
+        
+        .floating-elements {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: -1;
+        }
+        
+        .floating-element {
+            position: absolute;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+            animation: float-random 10s infinite ease-in-out;
+        }
+        
+        @keyframes float-random {
+            0%, 100% { transform: translateY(0px) rotate(0deg); }
+            33% { transform: translateY(-20px) rotate(120deg); }
+            66% { transform: translateY(20px) rotate(240deg); }
+        }
+        
+        @media (max-width: 768px) {
+            .container {
+                padding: 0 15px;
+            }
+            
+            h1 {
+                font-size: 2rem;
+            }
+            
+            .section {
+                padding: 2rem;
+            }
+            
+            .social-links {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .games-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="floating-elements">
+        <div class="floating-element" style="width: 60px; height: 60px; top: 10%; left: 10%; animation-delay: 0s;"></div>
+        <div class="floating-element" style="width: 80px; height: 80px; top: 20%; right: 10%; animation-delay: 2s;"></div>
+        <div class="floating-element" style="width: 40px; height: 40px; bottom: 30%; left: 20%; animation-delay: 4s;"></div>
+        <div class="floating-element" style="width: 70px; height: 70px; bottom: 20%; right: 20%; animation-delay: 6s;"></div>
+    </div>
+
+    <header>
+        <div class="header-bg"></div>
+        <div class="container">
+            <div class="profile-image">🎮</div>
+            <h1>RyugoGame</h1>
+            <p class="tagline">ゲーム実況者 | エンターテイナー</p>
+        </div>
+    </header>
+
+    <main class="main-content">
+        <div class="container">
+            <section class="section">
+                <h2>About Me</h2>
+                <div class="about-content">
+                    <p>こんにちは！RyugoGameです。様々なゲームを実況しながら、視聴者の皆さんと楽しい時間を過ごしています。</p>
+                    <p>ゲームの魅力を伝え、コミュニティと一緒に成長していくことを目指しています。</p>
+                    <p>いつも応援してくださる皆さん、ありがとうございます！</p>
+                </div>
+            </section>
+
+            <section class="section">
+                <h2>Stats</h2>
+                <div class="stats">
+                    <div class="stat-card">
+                        <div class="stat-number">XXX</div>
+                        <div class="stat-label">チャンネル登録者数</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number">XXX</div>
+                        <div class="stat-label">総再生回数</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number">XXX</div>
+                        <div class="stat-label">投稿動画数</div>
+                    </div>
+                </div>
+            </section>
+
+            <section class="section">
+                <h2>プレイゲーム</h2>
+                <div class="games-grid">
+                    <div class="game-card">
+                        <div class="game-icon">🎯</div>
+                        <h3>アクションゲーム</h3>
+                        <p>スリリングなアクションを楽しもう！</p>
+                    </div>
+                    <div class="game-card">
+                        <div class="game-icon">🏆</div>
+                        <h3>競技ゲーム</h3>
+                        <p>勝負の世界でスキルを磨く</p>
+                    </div>
+                    <div class="game-card">
+                        <div class="game-icon">🎪</div>
+                        <h3>パーティゲーム</h3>
+                        <p>みんなで楽しく盛り上がろう</p>
+                    </div>
+                    <div class="game-card">
+                        <div class="game-icon">🎨</div>
+                        <h3>インディーゲーム</h3>
+                        <p>隠れた名作を発掘中</p>
+                    </div>
+                </div>
+            </section>
+
+            <section class="section">
+                <h2>Social Links</h2>
+                <div class="social-links">
+                    <a href="https://youtube.com/@ryugogame1211" class="social-link">
+                        <span class="social-icon">📺</span>
+                        <span>YouTube</span>
+                    </a>
+                    <a href="#" class="social-link">
+                        <span class="social-icon">🐦</span>
+                        <span>Twitter</span>
+                    </a>
+                    <a href="#" class="social-link">
+                        <span class="social-icon">📷</span>
+                        <span>Instagram</span>
+                    </a>
+                    <a href="#" class="social-link">
+                        <span class="social-icon">🎮</span>
+                        <span>Twitch</span>
+                    </a>
+                </div>
+            </section>
+        </div>
+    </main>
+
+    <footer>
+        <div class="container">
+            <p>&copy; 2025 RyugoGame. All rights reserved.</p>
+            <p style="font-size: 0.8rem; opacity: 0.6; margin-top: 0.5rem;">created by uirusuniki</p>
+        </div>
+    </footer>
+
+    <script>
+        // スムーズスクロール効果
+        document.addEventListener('DOMContentLoaded', function() {
+            const sections = document.querySelectorAll('.section');
+            
+            const observerOptions = {
+                threshold: 0.1,
+                rootMargin: '0px 0px -50px 0px'
+            };
+            
+            const observer = new IntersectionObserver(function(entries) {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.style.opacity = '1';
+                        entry.target.style.transform = 'translateY(0)';
+                    }
+                });
+            }, observerOptions);
+            
+            sections.forEach(section => {
+                section.style.opacity = '0';
+                section.style.transform = 'translateY(30px)';
+                section.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
+                observer.observe(section);
+            });
+            
+            // パーティクル効果
+            function createParticle() {
+                const particle = document.createElement('div');
+                particle.className = 'floating-element';
+                particle.style.position = 'fixed';
+                particle.style.width = Math.random() * 20 + 10 + 'px';
+                particle.style.height = particle.style.width;
+                particle.style.left = Math.random() * 100 + '%';
+                particle.style.top = '100%';
+                particle.style.background = 'rgba(255, 255, 255, 0.1)';
+                particle.style.borderRadius = '50%';
+                particle.style.pointerEvents = 'none';
+                particle.style.zIndex = '-1';
+                
+                document.body.appendChild(particle);
+                
+                const animation = particle.animate([
+                    { transform: 'translateY(0) rotate(0deg)', opacity: 1 },
+                    { transform: 'translateY(-100vh) rotate(360deg)', opacity: 0 }
+                ], {
+                    duration: Math.random() * 3000 + 2000,
+                    easing: 'ease-out'
+                });
+                
+                animation.onfinish = () => particle.remove();
+            }
+            
+            setInterval(createParticle, 2000);
+        });
+    </script>
+</body>
+</html>
